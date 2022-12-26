@@ -1,12 +1,13 @@
+let value = {}
+
 const users = (state = [], action) => {
     switch (action.type) {
         case 'LOAD_CONTACT_SUCCESS':
-            return action.data.map(item => ({
-                id: item.id,
-                name: item.name,
-                phone: item.phone,
-                sent: true
-            }))
+            return [value.page = action.page, value.pages = action.pages], [...(value.page === 1 ? [] : state), ...action.data.map(item => {
+                item.sent = true
+                return item
+            })]
+
         case 'ADD_CONTACT':
             return [
                 ...state,
@@ -39,6 +40,19 @@ const users = (state = [], action) => {
             })
 
         case 'RESEND_CONTACT_SUCCESS':
+            return state.map(item => {
+                if (item.id === action.id) {
+                    return {
+                        id: action.users.id,
+                        name: action.users.name,
+                        phone: action.users.phone,
+                        sent: true
+                    }
+                }
+                return item
+            })
+
+        case 'UPDATE_CONTACT_SUCCESS':
             return state.map(item => {
                 if (item.id === action.id) {
                     return {

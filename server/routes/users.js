@@ -7,8 +7,9 @@ const { Op } = require('sequelize')
 /* GET users listing. */
 router.get('/', async (req, res, next) => {
   try {
-    const { page, name, phone } = req.query
+    const { name, phone } = req.query
 
+    const page = parseInt(req.query.page) || 1
     const limit = 9
     const offset = (page - 1) * limit
 
@@ -17,8 +18,8 @@ router.get('/', async (req, res, next) => {
 
     if (name && phone) {
       const users = await models.User.findAll({
-        // limit,
-        // offset,
+        limit,
+        offset,
         where: {
           [Op.or]: [
             {
@@ -40,14 +41,14 @@ router.get('/', async (req, res, next) => {
 
       res.json(new Response({
         users,
-        // page: Number(page),
-        // pages
+        page: Number(page),
+        pages
       }))
 
     } else if (name) {
       const users = await models.User.findAll({
-        // limit,
-        // offset,
+        limit,
+        offset,
         where: {
           [Op.and]: [
             {
@@ -64,13 +65,13 @@ router.get('/', async (req, res, next) => {
 
       res.json(new Response({
         users,
-        // page: Number(page),
-        // pages
+        page: Number(page),
+        pages
       }))
     } else if (phone) {
       const users = await models.User.findAll({
-        // limit,
-        // offset,
+        limit,
+        offset,
         where: {
           [Op.and]: [
             {
@@ -87,14 +88,14 @@ router.get('/', async (req, res, next) => {
 
       res.json(new Response({
         users,
-        // page: Number(page),
-        // pages
+        page: Number(page),
+        pages
       }))
 
     } else {
       const users = await models.User.findAll({
-        // limit,
-        // offset,
+        limit,
+        offset,
         order: [
           ['name', 'ASC']
         ]
@@ -102,8 +103,8 @@ router.get('/', async (req, res, next) => {
 
       res.json(new Response({
         users,
-        // page: Number(page),
-        // pages
+        page: Number(page),
+        pages
       }))
     }
   } catch (error) {

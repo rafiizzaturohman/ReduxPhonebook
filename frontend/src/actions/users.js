@@ -6,14 +6,19 @@ const url = axios.create({
     headers: { 'Authorization': 'token' }
 })
 
-export const loadContactSuccess = (data) => ({
+// LOAD START
+export const loadContactSuccess = (data, page, pages) => ({
     type: 'LOAD_CONTACT_SUCCESS',
-    data
+    data,
+    page,
+    pages
 })
 
-export const loadContactFailure = (data) => ({
+export const loadContactFailure = (data, page, pages) => ({
     type: 'LOAD_CONTACT_FAILURE',
-    data
+    data,
+    page,
+    pages
 })
 
 export const loadContact = () => {
@@ -21,13 +26,15 @@ export const loadContact = () => {
         try {
             const { data } = await url.get('users')
 
-            return dispatch(loadContactSuccess(data.data.users))
+            return dispatch(loadContactSuccess(data.data.users, data.data.page, data.data.pages))
         } catch (error) {
             return dispatch(loadContactFailure())
         }
     }
 }
+// LOAD END
 
+// ADD START
 export const addContactSuccess = (id, users) => ({
     type: 'ADD_CONTACT_SUCCESS',
     id,
@@ -59,7 +66,9 @@ export const addContact = (name, phone) => {
         }
     }
 }
+// ADD END
 
+// RESEND START
 export const resendContactSuccess = (id, users) => ({
     type: 'RESEND_CONTACT_SUCCESS',
     id,
@@ -81,7 +90,33 @@ export const resendContact = (id, name, phone) => {
         }
     }
 }
+// RESEND END
 
+// UPDATE START
+export const updateContactSuccess = (id, users) => ({
+    type: 'UPDATE_CONTACT_SUCCESS',
+    id,
+    users
+})
+
+export const updateContactFailure = () => ({
+    type: 'UPDATE_CONTACT_FAILURE',
+})
+
+export const updateContact = (id, name, phone) => {
+    return async dispatch => {
+        try {
+            const { data } = await url.put(`users/${id}`, { name, phone })
+
+            return dispatch(updateContactSuccess(id, data.data))
+        } catch (error) {
+            return dispatch(updateContactFailure())
+        }
+    }
+}
+// UPDATE END
+
+// REMOVE START
 export const removeContactSuccess = (id) => ({
     type: 'REMOVE_CONTACT_SUCCESS',
     id
@@ -95,7 +130,7 @@ export const removeContactFailure = (id) => ({
 export const removeContact = (id) => {
     return async dispatch => {
         try {
-            await url.delete(`users/${id}`, { id })
+            await url.delete(`users/${id}`)
 
             return dispatch(removeContactSuccess(id))
         } catch (error) {
@@ -103,3 +138,28 @@ export const removeContact = (id) => {
         }
     }
 }
+// REMOVE END
+
+// SEARCH START
+// export const searchContactSuccess = (id) => ({
+//     type: 'SEARCH_CONTACT_SUCCESS',
+//     id
+// })
+
+// export const searchContactFailure = (id) => ({
+//     type: 'SEARCH_CONTACT_FAILURE',
+//     id
+// })
+
+// export const searchContact = (name, phone) => {
+//     return async dispatch => {
+//         try {
+//             await url.get(`users`, { params: { name, phone } })
+
+//             return dispatch(searchContactSuccess(name, phone))
+//         } catch (error) {
+//             return dispatch(searchContactFailure())
+//         }
+//     }
+// }
+// SEARCH END
