@@ -9,7 +9,9 @@ class UserForm extends Component {
         this.state = {
             addCond: false,
             name: '',
-            phone: ''
+            phone: '',
+            searchName: '',
+            searchPhone: ''
         }
     }
 
@@ -31,8 +33,8 @@ class UserForm extends Component {
 
     handleSearch = (event) => {
         event.preventDefault()
-        this.props.search({ name: this.state.name, phone: this.state.phone })
-        this.setState({ name: '', phone: '' })
+        this.props.search(this.state.searchName, this.state.searchPhone)
+        // this.setState({ searchName: '', searchPhone: '' })
     }
 
     render() {
@@ -47,14 +49,14 @@ class UserForm extends Component {
 
                         <form onSubmit={this.handleSearch} className=''>
                             <div id='searchForm' className='space-y-8 mt-8'>
-                                <div className='space-x-5 flex justify-evenly items-center'>
-                                    <label className='text-lg font-semibold tracking-wide' htmlFor='name'>Name</label>
-                                    <input type='text' id='name' name='name' onChange={this.handleInputChange} value={this.state.name} className='text-lg border-2 border-blue-200 rounded-lg px-4 py-2 w-full' />
+                                <div className='space-x-6 flex justify-evenly items-center'>
+                                    <label className='text-lg font-semibold tracking-wide' htmlFor='searchName'>Name</label>
+                                    <input type='text' id='searchName' name='searchName' onChange={this.handleInputChange} value={this.state.searchName} className='text-lg border-2 border-blue-200 rounded-lg px-4 py-2 w-full' />
                                 </div>
 
-                                <div className='space-x-4 flex justify-evenly items-center'>
-                                    <label className='text-lg font-semibold tracking-wide' htmlFor='phone'>Phone</label>
-                                    <input type='text' id='phone' name='phone' onChange={this.handleInputChange} value={this.state.phone} className='text-lg border-2 border-blue-200 rounded-lg px-4 py-2 w-full' />
+                                <div className='space-x-5 flex justify-evenly items-center'>
+                                    <label className='text-lg font-semibold tracking-wide' htmlFor='searchPhone'>Phone</label>
+                                    <input type='text' id='searchPhone' name='searchPhone' onChange={this.handleInputChange} value={this.state.searchPhone} className='text-lg border-2 border-blue-200 rounded-lg px-4 py-2 w-full' />
                                 </div>
                             </div>
 
@@ -89,13 +91,13 @@ class UserForm extends Component {
                         <form onSubmit={this.handleSearch} className=''>
                             <div id='searchForm' className='space-y-8 mt-8'>
                                 <div className='space-x-5 flex justify-evenly items-center'>
-                                    <label className='text-lg font-semibold tracking-wide' htmlFor='name'>Name</label>
-                                    <input type='text' id='name' name='name' onChange={this.handleInputChange} value={this.state.name} className='text-lg border-2 border-blue-200 rounded-lg px-4 py-2 w-full' />
+                                    <label className='text-lg font-semibold tracking-wide' htmlFor='searchName'>Name</label>
+                                    <input type='text' id='searchName' name='searchName' onChange={this.handleInputChange} value={this.state.searchName} className='text-lg border-2 border-blue-200 rounded-lg px-4 py-2 w-full' />
                                 </div>
 
                                 <div className='space-x-4 flex justify-evenly items-center'>
-                                    <label className='text-lg font-semibold tracking-wide' htmlFor='phone'>Phone</label>
-                                    <input type='text' id='phone' name='phone' onChange={this.handleInputChange} value={this.state.phone} className='text-lg border-2 border-blue-200 rounded-lg px-4 py-2 w-full' />
+                                    <label className='text-lg font-semibold tracking-wide' htmlFor='searchPhone'>Phone</label>
+                                    <input type='text' id='searchPhone' name='searchPhone' onChange={this.handleInputChange} value={this.state.searchPhone} className='text-lg border-2 border-blue-200 rounded-lg px-4 py-2 w-full' />
                                 </div>
                             </div>
 
@@ -161,7 +163,7 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch, ownProps) => ({
     add: (name, phone) => dispatch(addContact(name, phone)),
     load: () => dispatch(loadContact()),
-    search: (query) => dispatch(searchContact(query))
+    search: (searchName, searchPhone) => dispatch(searchContact(searchName, searchPhone))
 })
 
 export default connect(

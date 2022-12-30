@@ -180,13 +180,23 @@ export const searchContactFailure = () => ({
     type: 'SEARCH_CONTACT_FAILURE'
 })
 
-export const searchContact = (query) => {
-    return async dispatch => {
+export const searchContact = (searchName, searchPhone) => {
+    return async (dispatch, getState) => {
+        let state = getState()
+        let params = {
+            ...state.users.params,
+            searchName,
+            searchPhone,
+            page: 1
+        }
+        console.log(params, 'Nye')
         try {
-            await url.get('users')
-
-            dispatch(searchContactSuccess(query))
-            dispatch(loadContact())
+            const { data } = await url.get('users', { params })
+            params = {
+                ...params,
+                pages: data.data.pages
+            }
+            dispatch(searchContactSuccess({ val: data.data.users, params }))
         } catch (error) {
             dispatch(searchContactFailure())
         }

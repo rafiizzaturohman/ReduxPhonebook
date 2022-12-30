@@ -7,7 +7,7 @@ const { Op } = require('sequelize')
 /* GET users listing. */
 router.get('/', async (req, res, next) => {
   try {
-    const { name, phone } = req.query
+    const { searchName, searchPhone } = req.query
 
     const page = parseInt(req.query.page) || 1
     const limit = 9
@@ -16,7 +16,7 @@ router.get('/', async (req, res, next) => {
     const total = await models.User.count()
     const pages = Math.ceil(total / limit)
 
-    if (name && phone) {
+    if (searchName && searchPhone) {
       const users = await models.User.findAll({
         limit,
         offset,
@@ -24,12 +24,12 @@ router.get('/', async (req, res, next) => {
           [Op.or]: [
             {
               name: {
-                [Op.iLike]: `%${name}%`
+                [Op.iLike]: `%${searchName}%`
               }
             },
             {
               phone: {
-                [Op.iLike]: `%${phone}%`
+                [Op.iLike]: `%${searchPhone}%`
               }
             }
           ]
@@ -45,7 +45,7 @@ router.get('/', async (req, res, next) => {
         pages
       }))
 
-    } else if (name) {
+    } else if (searchName) {
       const users = await models.User.findAll({
         limit,
         offset,
@@ -53,7 +53,7 @@ router.get('/', async (req, res, next) => {
           [Op.and]: [
             {
               name: {
-                [Op.iLike]: `%${name}%`
+                [Op.iLike]: `%${searchName}%`
               }
             }
           ]
@@ -68,7 +68,7 @@ router.get('/', async (req, res, next) => {
         page: Number(page),
         pages
       }))
-    } else if (phone) {
+    } else if (searchPhone) {
       const users = await models.User.findAll({
         limit,
         offset,
@@ -76,7 +76,7 @@ router.get('/', async (req, res, next) => {
           [Op.and]: [
             {
               phone: {
-                [Op.iLike]: `%${phone}%`
+                [Op.iLike]: `%${searchPhone}%`
               }
             }
           ]

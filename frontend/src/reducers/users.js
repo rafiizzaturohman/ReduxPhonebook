@@ -5,10 +5,8 @@ const users = (state = {
         pages: 0
     }
 }, action) => {
-    console.log(state, 'reduc')
     switch (action.type) {
         case 'LOAD_CONTACT_SUCCESS':
-            console.log(action)
             return {
                 data: action.data.map(item => {
                     item.sent = true
@@ -29,30 +27,44 @@ const users = (state = {
                 params: action.data.params
             }
         case 'LOAD_MORE_FAILURE':
-            console.log(action.error, 'Nge Teh ASU')
             return state
+
+        case 'SEARCH_CONTACT_SUCCESS':
+            console.log(action)
+            return {
+                data: action.data.val.map(item => {
+                    item.sent = true
+                    return item
+                }),
+                params: action.data.params
+            }
+
         case 'ADD_CONTACT':
-            return [
+            console.log(action)
+            return {
                 ...state,
-                {
+                data: [...state.data, {
                     id: action.id,
                     name: action.name,
                     phone: action.phone,
                     sent: true
-                }
-            ]
+                }]
+            }
         case 'ADD_CONTACT_SUCCESS':
-            return state.map(item => {
-                if (item.id === action.id) {
-                    return {
-                        id: action.users.id,
-                        name: action.users.name,
-                        phone: action.users.phone,
-                        sent: true
+            return {
+                ...state,
+                data: state.data.map(item => {
+                    if (item.id === action.id) {
+                        return {
+                            id: action.users.id,
+                            name: action.users.name,
+                            phone: action.users.phone,
+                            sent: true
+                        }
                     }
-                }
-                return item
-            })
+                    return item
+                })
+            }
         case 'ADD_CONTACT_FAILURE':
             return state.map(item => {
                 if (item.id === action.id) {
@@ -89,7 +101,10 @@ const users = (state = {
             })
 
         case 'REMOVE_CONTACT_SUCCESS':
-            return state.filter(item => item.id !== action.id)
+            return {
+                ...state,
+                data: state.data.filter(item => item.id !== action.id)
+            }
         case 'REMOVE_CONTACT_FAILURE':
         case 'LOAD_CONTACT_FAILURE':
         default:
