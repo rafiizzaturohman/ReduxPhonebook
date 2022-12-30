@@ -1,13 +1,36 @@
-let value = {}
-
-const users = (state = [], action) => {
+const users = (state = {
+    data: [],
+    params: {
+        page: 1,
+        pages: 0
+    }
+}, action) => {
+    console.log(state, 'reduc')
     switch (action.type) {
         case 'LOAD_CONTACT_SUCCESS':
-            return [value.page = action.page, value.pages = action.pages], [...(value.page === 1 ? [] : state), ...action.data.map(item => {
-                item.sent = true
-                return item
-            })]
+            console.log(action)
+            return {
+                data: action.data.map(item => {
+                    item.sent = true
+                    return item
+                }),
+                params: {
+                    page: action.page,
+                    pages: action.pages
+                }
+            }
 
+        case 'LOAD_MORE_SUCCESS':
+            return {
+                data: [...state.data, ...action.data.val.map(item => {
+                    item.sent = true
+                    return item
+                })],
+                params: action.data.params
+            }
+        case 'LOAD_MORE_FAILURE':
+            console.log(action.error, 'Nge Teh ASU')
+            return state
         case 'ADD_CONTACT':
             return [
                 ...state,

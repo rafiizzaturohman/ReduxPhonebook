@@ -1,6 +1,6 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Component } from 'react';
-import { addContact } from '../actions/users'
+import { addContact, loadContact, searchContact } from '../actions/users'
 import { connect } from 'react-redux';
 
 class UserForm extends Component {
@@ -31,7 +31,7 @@ class UserForm extends Component {
 
     handleSearch = (event) => {
         event.preventDefault()
-        this.props.search(this.state.name, this.state.phone)
+        this.props.search({ name: this.state.name, phone: this.state.phone })
         this.setState({ name: '', phone: '' })
     }
 
@@ -90,12 +90,12 @@ class UserForm extends Component {
                             <div id='searchForm' className='space-y-8 mt-8'>
                                 <div className='space-x-5 flex justify-evenly items-center'>
                                     <label className='text-lg font-semibold tracking-wide' htmlFor='name'>Name</label>
-                                    <input type='text' id='name' name='name' ref={state => this.params = state} className='text-lg border-2 border-blue-200 rounded-lg px-4 py-2 w-full' />
+                                    <input type='text' id='name' name='name' onChange={this.handleInputChange} value={this.state.name} className='text-lg border-2 border-blue-200 rounded-lg px-4 py-2 w-full' />
                                 </div>
 
                                 <div className='space-x-4 flex justify-evenly items-center'>
                                     <label className='text-lg font-semibold tracking-wide' htmlFor='phone'>Phone</label>
-                                    <input type='text' id='phone' name='phone' className='text-lg border-2 border-blue-200 rounded-lg px-4 py-2 w-full' />
+                                    <input type='text' id='phone' name='phone' onChange={this.handleInputChange} value={this.state.phone} className='text-lg border-2 border-blue-200 rounded-lg px-4 py-2 w-full' />
                                 </div>
                             </div>
 
@@ -151,11 +151,20 @@ class UserForm extends Component {
     }
 }
 
+const mapStateToProps = (state) => {
+    return {
+        users: state.users.data,
+        params: state.users.params
+    }
+}
+
 const mapDispatchToProps = (dispatch, ownProps) => ({
-    add: (name, phone) => dispatch(addContact(name, phone))
+    add: (name, phone) => dispatch(addContact(name, phone)),
+    load: () => dispatch(loadContact()),
+    search: (query) => dispatch(searchContact(query))
 })
 
 export default connect(
-    null,
+    mapStateToProps,
     mapDispatchToProps
 )(UserForm)

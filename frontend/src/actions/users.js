@@ -13,26 +13,56 @@ export const loadContactSuccess = (data, page, pages) => ({
     page,
     pages
 })
-
-export const loadContactFailure = (data, page, pages) => ({
-    type: 'LOAD_CONTACT_FAILURE',
-    data,
-    page,
-    pages
+export const loadContactFailure = () => ({
+    type: 'LOAD_CONTACT_FAILURE'
 })
 
 export const loadContact = () => {
-    return async dispatch => {
+    return async (dispatch, getState) => {
         try {
-            const { data } = await url.get('users')
+            const { data } = await url.get('users', { params: getState().users.params })
 
-            return dispatch(loadContactSuccess(data.data.users, data.data.page, data.data.pages))
+            dispatch(loadContactSuccess(data.data.users, data.data.page, data.data.pages))
         } catch (error) {
-            return dispatch(loadContactFailure())
+            dispatch(loadContactFailure())
         }
     }
 }
 // LOAD END
+
+// LOADMORE START
+export const loadMoreSuccess = (data) => ({
+    type: 'LOAD_MORE_SUCCESS',
+    data
+})
+
+export const loadMoreFailure = (error) => ({
+    type: 'LOAD_MORE_FAILURE',
+    error
+})
+
+export const loadMore = () => {
+    return async (dispatch, getState) => {
+        try {
+            let state = getState()
+            if (state.users.params.page <= state.users.params.pages) {
+                let params = {
+                    ...state.users.params,
+                    page: state.users.params.page + 1
+                }
+                const { data } = await url.get('users', { params })
+                params = {
+                    ...params,
+                    pages: data.data.pages
+                }
+                dispatch(loadMoreSuccess({ val: data.data.users, params }))
+            }
+        } catch (error) {
+            dispatch(loadMoreFailure(error))
+        }
+    }
+}
+// LOADMORE END
 
 // ADD START
 export const addContactSuccess = (id, users) => ({
@@ -132,34 +162,34 @@ export const removeContact = (id) => {
         try {
             await url.delete(`users/${id}`)
 
-            return dispatch(removeContactSuccess(id))
+            dispatch(removeContactSuccess(id))
         } catch (error) {
-            return dispatch(removeContactFailure())
+            dispatch(removeContactFailure())
         }
     }
 }
 // REMOVE END
 
 // SEARCH START
-// export const searchContactSuccess = (id) => ({
-//     type: 'SEARCH_CONTACT_SUCCESS',
-//     id
-// })
+export const searchContactSuccess = (data) => ({
+    type: 'SEARCH_CONTACT_SUCCESS',
+    data
+})
 
-// export const searchContactFailure = (id) => ({
-//     type: 'SEARCH_CONTACT_FAILURE',
-//     id
-// })
+export const searchContactFailure = () => ({
+    type: 'SEARCH_CONTACT_FAILURE'
+})
 
-// export const searchContact = (name, phone) => {
-//     return async dispatch => {
-//         try {
-//             await url.get(`users`, { params: { name, phone } })
+export const searchContact = (query) => {
+    return async dispatch => {
+        try {
+            await url.get('users')
 
-//             return dispatch(searchContactSuccess(name, phone))
-//         } catch (error) {
-//             return dispatch(searchContactFailure())
-//         }
-//     }
-// }
+            dispatch(searchContactSuccess(query))
+            dispatch(loadContact())
+        } catch (error) {
+            dispatch(searchContactFailure())
+        }
+    }
+}
 // SEARCH END

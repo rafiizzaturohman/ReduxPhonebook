@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { connect } from 'react-redux'
 import UserItem from "../components/page/UserItem";
-import { loadContact, removeContact, resendContact, updateContact } from "../actions/users";
+import { loadContact, loadMore, removeContact, resendContact, updateContact } from "../actions/users";
 
 class UserList extends Component {
 
@@ -11,8 +11,8 @@ class UserList extends Component {
 
     scrolling = (event) => {
         var element = event.target;
-        if (element.scrollHeight - element.scrollTop === element.clientHeight) {
-            console.log('Scrolled')
+        if (element.scrollHeight - element.scrollTop - element.clientHeight <= 1) {
+            this.props.loadMore()
         }
     }
 
@@ -30,14 +30,16 @@ class UserList extends Component {
 }
 
 const mapStateToProps = (state, ownProps) => ({
-    users: state.users
+    users: state.users.data,
+    params: state.users.params
 })
 
 const mapDispatchToProps = (dispatch, ownProps) => ({
     load: () => dispatch(loadContact()),
     remove: (id) => dispatch(removeContact(id)),
     resend: (id, name, phone) => dispatch(resendContact(id, name, phone)),
-    update: (id, name, phone) => dispatch(updateContact(id, name, phone))
+    update: (id, name, phone) => dispatch(updateContact(id, name, phone)),
+    loadMore: () => dispatch(loadMore())
 })
 
 export default connect(
