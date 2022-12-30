@@ -30,7 +30,6 @@ const users = (state = {
             return state
 
         case 'SEARCH_CONTACT_SUCCESS':
-            console.log(action)
             return {
                 data: action.data.val.map(item => {
                     item.sent = true
@@ -40,7 +39,6 @@ const users = (state = {
             }
 
         case 'ADD_CONTACT':
-            console.log(action)
             return {
                 ...state,
                 data: [...state.data, {

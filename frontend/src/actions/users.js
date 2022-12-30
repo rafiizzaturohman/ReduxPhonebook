@@ -189,7 +189,6 @@ export const searchContact = (searchName, searchPhone) => {
             searchPhone,
             page: 1
         }
-        console.log(params, 'Nye')
         try {
             const { data } = await url.get('users', { params })
             params = {
