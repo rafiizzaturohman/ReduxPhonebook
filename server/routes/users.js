@@ -35,7 +35,7 @@ router.get('/', async (req, res, next) => {
           ]
         },
         order: [
-          ['name', 'ASC']
+          ['id', 'ASC']
         ]
       })
 
@@ -59,7 +59,7 @@ router.get('/', async (req, res, next) => {
           ]
         },
         order: [
-          ['name', 'ASC']
+          ['id', 'ASC']
         ]
       })
 
@@ -82,7 +82,7 @@ router.get('/', async (req, res, next) => {
           ]
         },
         order: [
-          ['name', 'ASC']
+          ['id', 'ASC']
         ]
       })
 
@@ -97,7 +97,7 @@ router.get('/', async (req, res, next) => {
         limit,
         offset,
         order: [
-          ['name', 'ASC']
+          ['id', 'ASC']
         ]
       })
 

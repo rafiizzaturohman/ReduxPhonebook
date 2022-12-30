@@ -85,15 +85,21 @@ export const addContactRedux = (id, name, phone) => ({
 
 export const addContact = (name, phone) => {
     const id = Date.now()
-    return async dispatch => {
-        dispatch(addContactRedux(id, name, phone))
+    return async (dispatch, getState) => {
+        if (!getState().users.params.searchName && !getState().users.params.searchPhone) {
+            dispatch(addContactRedux(id, name, phone))
+        }
         try {
             const { data } = await url.post('users', { name, phone })
 
-            return dispatch(addContactSuccess(id, data.data))
+            if (!getState().users.params.searchName && !getState().users.params.searchPhone) {
+                dispatch(addContactSuccess(id, data.data))
+            }
         } catch (error) {
-            return dispatch(addContactFailure(id))
+            dispatch(addContactFailure(id))
         }
+
+
     }
 }
 // ADD END
