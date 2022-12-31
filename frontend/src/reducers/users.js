@@ -64,26 +64,34 @@ const users = (state = {
                 })
             }
         case 'ADD_CONTACT_FAILURE':
-            return state.map(item => {
-                if (item.id === action.id) {
-                    action.id = item.id
-                    item.sent = false
-                }
-                return item
-            })
+            return {
+                ...state,
+                data: [...state.data.map(item => {
+                    if (item.id === action.id) {
+                        return {
+                            ...item,
+                            sent: false
+                        }
+                    }
+                    return item
+                })]
+            }
 
         case 'RESEND_CONTACT_SUCCESS':
-            return state.map(item => {
-                if (item.id === action.id) {
-                    return {
-                        id: action.users.id,
-                        name: action.users.name,
-                        phone: action.users.phone,
-                        sent: true
+            return {
+                ...state,
+                data: state.data.map(item => {
+                    if (item.id === action.id) {
+                        return {
+                            id: action.users.id,
+                            name: action.users.name,
+                            phone: action.users.phone,
+                            sent: true
+                        }
                     }
-                }
-                return item
-            })
+                    return item
+                })
+            }
 
         case 'UPDATE_CONTACT_SUCCESS':
             return state.map(item => {
